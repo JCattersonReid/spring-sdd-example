@@ -1,6 +1,5 @@
 package com.example.springsddexample.service;
 
-import com.example.springsddexample.exception.UserAlreadyExistsException;
 import com.example.springsddexample.exception.UserNotFoundException;
 import com.example.springsddexample.model.assembler.UserAssembler;
 import com.example.springsddexample.model.enums.Status;
@@ -20,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserAssembler userAssembler;
+    private final UserValidationService userValidationService;
 
     public List<User> getAllUsers() {
         return userRepository.findByStatus(Status.ACTIVE)
@@ -35,15 +35,9 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        if (userRepository.existsByUsernameAndStatusActive(user.getUsername())) {
-            throw new UserAlreadyExistsException("Username", user.getUsername());
-        }
-        if (userRepository.existsByEmailAndStatusActive(user.getEmail())) {
-            throw new UserAlreadyExistsException("Email", user.getEmail());
-        }
+        userValidationService.validateUserCreation(user);
 
         UserEntity entity = userAssembler.toEntity(user);
-
         return userAssembler.toModel(userRepository.save(entity));
     }
 
@@ -51,16 +45,7 @@ public class UserService {
         UserEntity existingUser = userRepository.findByIdAndStatus(id, Status.ACTIVE)
                 .orElseThrow(() -> new UserNotFoundException(id));
         
-        if (user.getUsername() != null && 
-            !existingUser.getUsername().equals(user.getUsername()) &&
-            userRepository.existsByUsernameAndStatusActive(user.getUsername())) {
-            throw new UserAlreadyExistsException("Username", user.getUsername());
-        }
-        if (user.getEmail() != null && 
-            !existingUser.getEmail().equals(user.getEmail()) &&
-            userRepository.existsByEmailAndStatusActive(user.getEmail())) {
-            throw new UserAlreadyExistsException("Email", user.getEmail());
-        }
+        userValidationService.validateUserUpdate(user, existingUser);
         
         userAssembler.updateEntity(existingUser, user);
         UserEntity savedEntity = userRepository.save(existingUser);

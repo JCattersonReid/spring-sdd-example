@@ -1,10 +1,8 @@
 package com.example.springsddexample.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.springsddexample.model.enums.Status;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.UUID;
@@ -21,4 +19,5 @@ public class User extends RepresentationModel<User> {
     private String email;
     private String firstName;
     private String lastName;
+    private Status status;
 }

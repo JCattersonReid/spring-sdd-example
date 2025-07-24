@@ -18,10 +18,6 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     
     Optional<UserEntity> findByIdAndStatus(UUID id, Status status);
     
-    Optional<UserEntity> findByUsernameAndStatus(String username, Status status);
-    
-    Optional<UserEntity> findByEmailAndStatus(String email, Status status);
-    
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserEntity u WHERE u.username = :username AND u.status = 'ACTIVE'")
     boolean existsByUsernameAndStatusActive(@Param("username") String username);
     
