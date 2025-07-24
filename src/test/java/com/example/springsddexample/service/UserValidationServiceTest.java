@@ -5,6 +5,7 @@ import com.example.springsddexample.model.dto.User;
 import com.example.springsddexample.model.entity.UserEntity;
 import com.example.springsddexample.model.enums.Status;
 import com.example.springsddexample.repository.UserRepository;
+import com.example.springsddexample.util.UserTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,25 +35,11 @@ public class UserValidationServiceTest {
     @BeforeEach
     void setUp() {
         testId = UUID.randomUUID();
-        
-        testUser = User.builder()
+        testUser = UserTestUtils.createActiveUserWithId(testId);
+        testUserEntity = UserTestUtils.createUserEntityWithCustomUsername("existinguser")
+                .toBuilder()
                 .id(testId)
-                .username("testuser")
-                .email("test@example.com")
-                .firstName("Test")
-                .lastName("User")
-                .status(Status.ACTIVE)
-                .build();
-
-        testUserEntity = UserEntity.builder()
-                .id(testId)
-                .username("existinguser")
                 .email("existing@example.com")
-                .firstName("Existing")
-                .lastName("User")
-                .status(Status.ACTIVE)
-                .createdAt(ZonedDateTime.now())
-                .updatedAt(ZonedDateTime.now())
                 .build();
     }
 

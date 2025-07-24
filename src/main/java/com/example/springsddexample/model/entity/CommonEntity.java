@@ -26,7 +26,7 @@ public abstract class CommonEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    @Builder.Default
+    @SuperBuilder.Default
     private Status status = Status.ACTIVE;
 
     @PrePersist

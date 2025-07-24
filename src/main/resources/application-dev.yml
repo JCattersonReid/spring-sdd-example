@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/sdd_example_dev
+    username: sdd_user
+    password: sdd_password
+    
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        
+  flyway:
+    clean-disabled: false
+    
+logging:
+  level:
+    org.flywaydb: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.example.springsddexample: DEBUG
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env

@@ -6,6 +6,7 @@ import com.example.springsddexample.model.dto.User;
 import com.example.springsddexample.model.entity.UserEntity;
 import com.example.springsddexample.model.enums.Status;
 import com.example.springsddexample.repository.UserRepository;
+import com.example.springsddexample.util.UserTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,27 +48,8 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         testId = UUID.randomUUID();
-        
-        testUser = User.builder()
-                .id(testId)
-                .username("testuser")
-                .email("test@example.com")
-                .firstName("Test")
-                .lastName("User")
-                .status(Status.ACTIVE)
-                .build();
-
-        testUserEntity = UserEntity.builder()
-                .id(testId)
-                .username("testuser")
-                .email("test@example.com")
-                .firstName("Test")
-                .lastName("User")
-                .status(Status.ACTIVE)
-                .createdAt(ZonedDateTime.now())
-                .updatedAt(ZonedDateTime.now())
-                .build();
-
+        testUser = UserTestUtils.createActiveUserWithId(testId);
+        testUserEntity = UserTestUtils.createActiveUserEntityWithId(testId);
         testUserEntities = Arrays.asList(testUserEntity);
     }
 
@@ -78,7 +60,6 @@ public class UserServiceTest {
 
         List<User> result = userService.getAllUsers();
 
-        // Then
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(testUser, result.get(0));
@@ -88,12 +69,10 @@ public class UserServiceTest {
 
     @Test
     void getUserById_WhenUserExists_ShouldReturnUser() {
-        // Given
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.of(testUserEntity));
         when(userAssembler.toModel(testUserEntity)).thenReturn(testUser);
 
-        // When
         User result = userService.getUserById(testId);
 
         // Then
@@ -137,10 +116,7 @@ public class UserServiceTest {
     @Test
     void updateUser_WhenUserExists_ShouldValidateAndUpdateUser() {
         // Given
-        User updateUser = User.builder()
-                .username("updateduser")
-                .email("updated@example.com")
-                .build();
+        User updateUser = UserTestUtils.createUserForUpdate();
 
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.of(testUserEntity));
@@ -163,7 +139,7 @@ public class UserServiceTest {
     @Test
     void updateUser_WhenUserNotExists_ShouldThrowUserNotFoundException() {
         // Given
-        User updateUser = User.builder().username("updateduser").build();
+        User updateUser = UserTestUtils.createUserForUpdate();
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.empty());
 
@@ -177,7 +153,7 @@ public class UserServiceTest {
     @Test
     void patchUser_ShouldCallUpdateUser() {
         // Given
-        User patchUser = User.builder().username("patcheduser").build();
+        User patchUser = UserTestUtils.createUserForUpdate();
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.of(testUserEntity));
         when(userRepository.save(testUserEntity)).thenReturn(testUserEntity);
