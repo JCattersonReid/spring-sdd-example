@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: spring-sdd-postgres
+    environment:
+      POSTGRES_DB: sdd_example
+      POSTGRES_USER: sdd_user
+      POSTGRES_PASSWORD: sdd_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sdd-network
+
+  app:
+    build: .
+    container_name: spring-sdd-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sdd_example
+      SPRING_DATASOURCE_USERNAME: sdd_user
+      SPRING_DATASOURCE_PASSWORD: sdd_password
+    networks:
+      - sdd-network
+
+volumes:
+  postgres_data:
+
+networks:
+  sdd-network:
+    driver: bridge
