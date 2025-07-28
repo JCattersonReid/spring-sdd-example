@@ -1,18 +1,18 @@
 package com.example.springsddexample.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
+
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class User extends CommonModel {
+@Builder
+public class User extends RepresentationModel<User> {
 
+    private UUID id;
     private String username;
     private String email;
     private String firstName;
