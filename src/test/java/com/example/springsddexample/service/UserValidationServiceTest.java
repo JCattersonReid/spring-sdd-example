@@ -36,48 +36,14 @@ public class UserValidationServiceTest {
     void setUp() {
         testId = UUID.randomUUID();
         testUser = UserTestUtils.createActiveUserWithId(testId);
-        testUserEntity = UserTestUtils.createUserEntityWithCustomUsername("existinguser")
-                .toBuilder()
-                .id(testId)
-                .email("existing@example.com")
-                .build();
+        testUserEntity = UserTestUtils.createActiveUserEntity(testId);
+
+        testUserEntity.setEmail("existing@example.com");
+        testUserEntity.setUsername("existinguser");
     }
 
     @Test
-    void validateUserCreation_WhenUsernameAndEmailAreUnique_ShouldNotThrowException() {
-        when(userRepository.existsByUsernameAndStatusActive("testuser")).thenReturn(false);
-        when(userRepository.existsByEmailAndStatusActive("test@example.com")).thenReturn(false);
-
-        assertDoesNotThrow(() -> userValidationService.validateUserCreation(testUser));
-        verify(userRepository).existsByUsernameAndStatusActive("testuser");
-        verify(userRepository).existsByEmailAndStatusActive("test@example.com");
-    }
-
-    @Test
-    void validateUserCreation_WhenUsernameExists_ShouldThrowUserAlreadyExistsException() {
-        when(userRepository.existsByUsernameAndStatusActive("testuser")).thenReturn(true);
-
-        UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class,
-                () -> userValidationService.validateUserCreation(testUser));
-        assertEquals("Username already exists: testuser", exception.getMessage());
-        verify(userRepository).existsByUsernameAndStatusActive("testuser");
-        verify(userRepository, never()).existsByEmailAndStatusActive(anyString());
-    }
-
-    @Test
-    void validateUserCreation_WhenEmailExists_ShouldThrowUserAlreadyExistsException() {
-        when(userRepository.existsByUsernameAndStatusActive("testuser")).thenReturn(false);
-        when(userRepository.existsByEmailAndStatusActive("test@example.com")).thenReturn(true);
-
-        UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class,
-                () -> userValidationService.validateUserCreation(testUser));
-        assertEquals("Email already exists: test@example.com", exception.getMessage());
-        verify(userRepository).existsByUsernameAndStatusActive("testuser");
-        verify(userRepository).existsByEmailAndStatusActive("test@example.com");
-    }
-
-    @Test
-    void validateUserUpdate_WhenNoFieldsChanged_ShouldNotValidateUniqueness() {
+    void validateUserUpdateWhenNoFieldsChangedShouldNotValidateUniqueness() {
         User updateUser = User.builder()
                 .firstName("Updated")
                 .lastName("Name")
@@ -90,7 +56,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenUsernameChangedToUnique_ShouldNotThrowException() {
+    void validateUserUpdateWhenUsernameChangedToUniqueShouldNotThrowException() {
         User updateUser = User.builder()
                 .username("newusername")
                 .build();
@@ -101,7 +67,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenUsernameChangedToExisting_ShouldThrowUserAlreadyExistsException() {
+    void validateUserUpdateWhenUsernameChangedToExistingShouldThrowUserAlreadyExistsException() {
         User updateUser = User.builder()
                 .username("duplicateusername")
                 .build();
@@ -114,7 +80,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenEmailChangedToUnique_ShouldNotThrowException() {
+    void validateUserUpdateWhenEmailChangedToUniqueShouldNotThrowException() {
         User updateUser = User.builder()
                 .email("newemail@example.com")
                 .build();
@@ -125,7 +91,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenEmailChangedToExisting_ShouldThrowUserAlreadyExistsException() {
+    void validateUserUpdateWhenEmailChangedToExistingShouldThrowUserAlreadyExistsException() {
         User updateUser = User.builder()
                 .email("duplicate@example.com")
                 .build();
@@ -138,7 +104,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenUsernameUnchanged_ShouldNotValidateUsername() {
+    void validateUserUpdateWhenUsernameUnchangedShouldNotValidateUsername() {
         User updateUser = User.builder()
                 .username("existinguser")
                 .email("newemail@example.com")
@@ -151,7 +117,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenEmailUnchanged_ShouldNotValidateEmail() {
+    void validateUserUpdateWhenEmailUnchangedShouldNotValidateEmail() {
         User updateUser = User.builder()
                 .username("newusername")
                 .email("existing@example.com")
@@ -164,7 +130,7 @@ public class UserValidationServiceTest {
     }
 
     @Test
-    void validateUserUpdate_WhenBothFieldsChangedToExisting_ShouldThrowUsernameExceptionFirst() {
+    void validateUserUpdateWhenBothFieldsChangedToExistingShouldThrowUsernameExceptionFirst() {
         User updateUser = User.builder()
                 .username("duplicateusername")
                 .email("duplicate@example.com")

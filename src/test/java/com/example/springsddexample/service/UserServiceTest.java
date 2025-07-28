@@ -49,12 +49,12 @@ public class UserServiceTest {
     void setUp() {
         testId = UUID.randomUUID();
         testUser = UserTestUtils.createActiveUserWithId(testId);
-        testUserEntity = UserTestUtils.createActiveUserEntityWithId(testId);
+        testUserEntity = UserTestUtils.createActiveUserEntity(testId);
         testUserEntities = Arrays.asList(testUserEntity);
     }
 
     @Test
-    void getAllUsers_ShouldReturnListOfActiveUsers() {
+    void getAllUsersShouldReturnListOfActiveUsers() {
         when(userRepository.findByStatus(Status.ACTIVE)).thenReturn(testUserEntities);
         when(userAssembler.toModel(testUserEntity)).thenReturn(testUser);
 
@@ -68,14 +68,13 @@ public class UserServiceTest {
     }
 
     @Test
-    void getUserById_WhenUserExists_ShouldReturnUser() {
+    void getUserByIdWhenUserExistsShouldReturnUser() {
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.of(testUserEntity));
         when(userAssembler.toModel(testUserEntity)).thenReturn(testUser);
 
         User result = userService.getUserById(testId);
 
-        // Then
         assertNotNull(result);
         assertEquals(testUser, result);
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
@@ -83,28 +82,23 @@ public class UserServiceTest {
     }
 
     @Test
-    void getUserById_WhenUserNotExists_ShouldThrowUserNotFoundException() {
-        // Given
+    void getUserByIdWhenUserNotExistsShouldThrowUserNotFoundException() {
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(testId));
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
         verify(userAssembler, never()).toModel(any());
     }
 
     @Test
-    void createUser_ShouldValidateAndCreateUser() {
-        // Given
+    void createUserShouldValidateAndCreateUser() {
         when(userAssembler.toEntity(testUser)).thenReturn(testUserEntity);
         when(userRepository.save(testUserEntity)).thenReturn(testUserEntity);
         when(userAssembler.toModel(testUserEntity)).thenReturn(testUser);
 
-        // When
         User result = userService.createUser(testUser);
 
-        // Then
         assertNotNull(result);
         assertEquals(testUser, result);
         verify(userValidationService).validateUserCreation(testUser);
@@ -114,8 +108,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUser_WhenUserExists_ShouldValidateAndUpdateUser() {
-        // Given
+    void updateUserWhenUserExistsShouldValidateAndUpdateUser() {
         User updateUser = UserTestUtils.createUserForUpdate();
 
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
@@ -123,10 +116,8 @@ public class UserServiceTest {
         when(userRepository.save(testUserEntity)).thenReturn(testUserEntity);
         when(userAssembler.toModel(testUserEntity)).thenReturn(testUser);
 
-        // When
         User result = userService.updateUser(testId, updateUser);
 
-        // Then
         assertNotNull(result);
         assertEquals(testUser, result);
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
@@ -137,32 +128,27 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUser_WhenUserNotExists_ShouldThrowUserNotFoundException() {
-        // Given
+    void updateUserWhenUserNotExistsShouldThrowUserNotFoundException() {
         User updateUser = UserTestUtils.createUserForUpdate();
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(UserNotFoundException.class, 
+        assertThrows(UserNotFoundException.class,
                 () -> userService.updateUser(testId, updateUser));
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
         verify(userValidationService, never()).validateUserUpdate(any(), any());
     }
 
     @Test
-    void patchUser_ShouldCallUpdateUser() {
-        // Given
+    void patchUserShouldCallUpdateUser() {
         User patchUser = UserTestUtils.createUserForUpdate();
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.of(testUserEntity));
         when(userRepository.save(testUserEntity)).thenReturn(testUserEntity);
         when(userAssembler.toModel(testUserEntity)).thenReturn(testUser);
 
-        // When
         User result = userService.patchUser(testId, patchUser);
 
-        // Then
         assertNotNull(result);
         assertEquals(testUser, result);
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
@@ -170,28 +156,23 @@ public class UserServiceTest {
     }
 
     @Test
-    void deleteUser_WhenUserExists_ShouldSoftDeleteUser() {
-        // Given
+    void deleteUserWhenUserExistsShouldSoftDeleteUser() {
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.of(testUserEntity));
         when(userRepository.save(testUserEntity)).thenReturn(testUserEntity);
 
-        // When
         assertDoesNotThrow(() -> userService.deleteUser(testId));
 
-        // Then
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
         verify(userRepository).save(testUserEntity);
         assertEquals(Status.DELETED, testUserEntity.getStatus());
     }
 
     @Test
-    void deleteUser_WhenUserNotExists_ShouldThrowUserNotFoundException() {
-        // Given
+    void deleteUserWhenUserNotExistsShouldThrowUserNotFoundException() {
         when(userRepository.findByIdAndStatus(testId, Status.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(UserNotFoundException.class, () -> userService.deleteUser(testId));
         verify(userRepository).findByIdAndStatus(testId, Status.ACTIVE);
         verify(userRepository, never()).save(any());

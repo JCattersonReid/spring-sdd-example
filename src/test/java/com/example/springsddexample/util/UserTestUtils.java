@@ -7,40 +7,10 @@ import com.example.springsddexample.model.enums.Status;
 import java.util.UUID;
 
 public class UserTestUtils {
-    
-    public static User createActiveUser() {
-        return User.builder()
-                .id(UUID.randomUUID())
-                .username(TestUtils.DEFAULT_USERNAME)
-                .email(TestUtils.DEFAULT_EMAIL)
-                .firstName(TestUtils.DEFAULT_FIRST_NAME)
-                .lastName(TestUtils.DEFAULT_LAST_NAME)
-                .status(Status.ACTIVE)
-                .createdAt(TestUtils.fixedDateTime())
-                .updatedAt(TestUtils.fixedDateTime())
-                .build();
-    }
-    
+
     public static User createActiveUserWithId(UUID id) {
-        return createActiveUser().toBuilder()
-                .id(id)
-                .build();
-    }
-    
-    public static User createUserWithCustomEmail(String email) {
-        return createActiveUser().toBuilder()
-                .email(email)
-                .build();
-    }
-    
-    public static User createUserWithCustomUsername(String username) {
-        return createActiveUser().toBuilder()
-                .username(username)
-                .build();
-    }
-    
-    public static User createUserForCreation() {
         return User.builder()
+                .id(id)
                 .username(TestUtils.DEFAULT_USERNAME)
                 .email(TestUtils.DEFAULT_EMAIL)
                 .firstName(TestUtils.DEFAULT_FIRST_NAME)
@@ -57,9 +27,9 @@ public class UserTestUtils {
                 .build();
     }
     
-    public static UserEntity createActiveUserEntity() {
+    public static UserEntity createActiveUserEntity(UUID testId) {
         return UserEntity.builder()
-                .id(UUID.randomUUID())
+                .id(testId)
                 .username(TestUtils.DEFAULT_USERNAME)
                 .email(TestUtils.DEFAULT_EMAIL)
                 .firstName(TestUtils.DEFAULT_FIRST_NAME)
@@ -69,22 +39,5 @@ public class UserTestUtils {
                 .updatedAt(TestUtils.fixedDateTime())
                 .build();
     }
-    
-    public static UserEntity createActiveUserEntityWithId(UUID id) {
-        return createActiveUserEntity().toBuilder()
-                .id(id)
-                .build();
-    }
-    
-    public static UserEntity createUserEntityWithCustomUsername(String username) {
-        return createActiveUserEntity().toBuilder()
-                .username(username)
-                .build();
-    }
-    
-    public static UserEntity createUserEntityWithCustomEmail(String email) {
-        return createActiveUserEntity().toBuilder()
-                .email(email)
-                .build();
-    }
+
 }
