@@ -266,13 +266,65 @@ When working with tickets, use this minimalistic format for maximum effectivenes
 ## Automated Ticket Processing
 When a prompt begins with `TICKET-XXXX` (where XXXX is a number), follow this automated workflow:
 
-### 1. Branch Creation
+### 1. Planning Phase
+Before any implementation, Claude will create a comprehensive implementation plan:
+
+Claude Planning Output Format:
+
+```
+## TICKET ANALYSIS: PROJ-XXXX
+### Understanding & Scope
+- [Restate the ticket goal in technical terms]
+- [Identify all components that need modification]
+- [List any assumptions being made]
+
+### Technical Implementation Plan
+
+#### Files to Modify/Create:
+- **Controller:** [Specific controller class and methods]
+- **Service:** [Service class and new/modified methods]
+- **Repository:** [Repository changes if needed]
+- **Entity/DTO:** [Any model changes required]
+- **Tests:** [Specific test classes to create/modify]
+
+#### Implementation Steps:
+1. [Step 1 with specific technical details]
+2. [Step 2 with specific technical details]
+3. [Step 3 with specific technical details]
+4. [etc.]
+
+#### Testing Strategy:
+- **Unit Tests:** [Specific test scenarios and coverage targets]
+- **Integration Tests:** [Database/API integration test scenarios]
+- **Edge Cases:** [Boundary conditions and error scenarios to test]
+
+#### Database Changes:
+- [Any schema modifications needed]
+- [New queries or repository methods]
+- [Migration requirements if applicable]
+
+### Risk Assessment:
+- [Potential integration issues]
+- [Performance considerations]
+- [Backward compatibility concerns]
+
+### Estimated Effort:
+- Implementation: [X hours]
+- Testing: [Y hours]
+- Total: [Z hours]
+
+### Questions/Clarifications Needed:
+- [Any ambiguities in requirements]
+- [Technical decisions requiring input]
+```
+
+### 2. Branch Creation (After Plan Approval)
 ```bash
 git checkout -b PROJ-XXXX
 ```
 Replace XXXX with the ticket number from the prompt.
 
-### 2. Implementation Requirements
+### 3. Implementation Requirements
 - Complete all acceptance criteria listed in the ticket
 - Implement service logic with **minimum 85% code coverage** (lines tested, not just covered)
 - Add controller tests for all new/modified endpoints
@@ -280,14 +332,14 @@ Replace XXXX with the ticket number from the prompt.
 - Follow all coding standards and conventions outlined in this document
 - Use test utils classes for consistent test data creation
 
-### 3. Code Quality Standards
+### 4. Code Quality Standards
 - **Service Layer:** Must achieve 85% line coverage through meaningful tests
 - **Controller Layer:** Test all HTTP status codes, request/response validation, and edge cases
 - **Repository Layer:** Test custom queries, pagination, and filtering logic
 - **Integration Tests:** Use TestContainers for database-dependent functionality
 - **Test Naming:** Follow camelCase descriptive naming (e.g., `shouldReturnFilteredUsersWhenStatusProvided`)
 
-### 4. Commit Process
+### 5. Commit Process
 After implementation is complete, commit changes using:
 ```bash
 git add -A
@@ -299,7 +351,7 @@ git push origin PROJ-XXXX
 - `PROJ-1234: Add user status filtering to GET /users endpoint with validation`
 - `PROJ-5678: Implement soft delete functionality for Product entity with audit logging`
 
-### 5. Pull Request Creation
+### 6. Pull Request Creation
 Create a PR using GitHub CLI:
 ```bash
 gh pr create --title "PROJ-XXXX: [Descriptive Title]" --body "[PR Description]"
@@ -331,7 +383,7 @@ gh pr create --title "PROJ-XXXX: [Descriptive Title]" --body "[PR Description]"
 - [x] Criterion 3 - Implementation details
 ```
 
-### 6. Required Git Commands
+### 7. Required Git Commands
 Only use these specific git commands during the workflow:
 - `git checkout -b PROJ-XXXX` - Create feature branch
 - `git add -A` - Stage all changes

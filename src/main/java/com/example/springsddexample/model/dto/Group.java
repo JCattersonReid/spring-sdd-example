@@ -16,13 +16,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class User extends RepresentationModel<User> {
+public class Group extends RepresentationModel<Group> {
 
     private UUID id;
-    private String username;
-    private String email;
-    private String firstName;
-    private String lastName;
+    private String name;
+    private String description;
+    private Boolean selfJoin;
+    private Boolean selfLeave;
+    private User admin;
     private Status status;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
