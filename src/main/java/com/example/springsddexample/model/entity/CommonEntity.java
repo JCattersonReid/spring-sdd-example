@@ -25,7 +25,6 @@ public abstract class CommonEntity {
     private ZonedDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
     private Status status = Status.ACTIVE;
 
     @PrePersist
