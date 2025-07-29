@@ -29,7 +29,7 @@ src/main/java/com/example/springsddexample/
 └── service         # Business logic layer (service classes and interfaces)
 
 src/main/resources/
-├── application.yml                   # Application configuration
+├── application.yml                  # Application configuration
 ├── application-dev.yml              # Development profile configuration
 ├── application-test.yml             # Test profile configuration
 └── db/migration/
