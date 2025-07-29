@@ -1,5 +1,7 @@
 package com.example.springsddexample.controller;
 
+import com.example.springsddexample.exception.GroupAlreadyExistsException;
+import com.example.springsddexample.exception.GroupNotFoundException;
 import com.example.springsddexample.exception.UserAlreadyExistsException;
 import com.example.springsddexample.exception.UserNotFoundException;
 import com.example.springsddexample.model.ErrorResponse;
@@ -57,6 +59,36 @@ public class ControllerErrorHandler {
                 .build();
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(GroupNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleGroupNotFoundException(
+            GroupNotFoundException ex, HttpServletRequest request) {
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .error("Not Found")
+                .status(HttpStatus.NOT_FOUND.value())
+                .timestamp(ZonedDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(GroupAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleGroupAlreadyExistsException(
+            GroupAlreadyExistsException ex, HttpServletRequest request) {
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .error("Conflict")
+                .status(HttpStatus.CONFLICT.value())
+                .timestamp(ZonedDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
