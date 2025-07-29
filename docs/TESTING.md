@@ -17,18 +17,15 @@
   - `shouldReturnEmptyListWhenNoUsersExist`
 
 ### Test Structure
-Follow **Given-When-Then** pattern:
+Follow **Given-When-Then** pattern (structure only, no comments):
 ```java
 @Test
 void shouldReturnUserWhenValidIdProvided() {
-    // Given
     User expectedUser = UserTestUtils.createActiveUser();
     when(userRepository.findById(1L)).thenReturn(Optional.of(expectedUser));
     
-    // When
     User actualUser = userService.findById(1L);
     
-    // Then
     assertThat(actualUser).isEqualTo(expectedUser);
 }
 ```
@@ -53,27 +50,27 @@ public class TestUtils {
 public class UserTestUtils {
     public static User createActiveUser() {
         return User.builder()
-            .username(TestUtils.DEFAULT_USERNAME)
-            .email(TestUtils.DEFAULT_EMAIL)
-            .firstName("John")
-            .lastName("Doe")
-            .status(Status.ACTIVE)
-            .build();
+                .username(TestUtils.DEFAULT_USERNAME)
+                .email(TestUtils.DEFAULT_EMAIL)
+                .firstName("John")
+                .lastName("Doe")
+                .status(Status.ACTIVE)
+                .build();
     }
     
     public static UserDto createUserDto() {
         return UserDto.builder()
-            .username(TestUtils.DEFAULT_USERNAME)
-            .email(TestUtils.DEFAULT_EMAIL)
-            .firstName("John")
-            .lastName("Doe")
-            .build();
+                .username(TestUtils.DEFAULT_USERNAME)
+                .email(TestUtils.DEFAULT_EMAIL)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
     }
     
     public static User createUserWithCustomEmail(String email) {
         return createActiveUser().toBuilder()
-            .email(email)
-            .build();
+                .email(email)
+                .build();
     }
 }
 ```
@@ -176,6 +173,11 @@ class UserRepositoryIntegrationTest {
 - **Trivial Methods:** Simple getters/setters without logic
 - **Third-party Libraries:** External library functionality
 - **Configuration Classes:** Simple bean definitions
+
+### Code Style in Tests
+- **No Comments:** Avoid Given-When-Then comments or any explanatory comments
+- **Accessor Chaining:** Use fluent method chaining with consistent indentation
+- **Clean Structure:** Let the code structure speak for itself
 
 ### Test Maintenance
 - Keep tests simple and focused on single behaviors

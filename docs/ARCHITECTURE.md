@@ -64,6 +64,8 @@ src/main/resources/
 - Use `@Builder.Default` for default status
 - Implement equals/hashCode based on business keys
 - Use appropriate JPA annotations for relationships
+- **No @Column annotations required:** Let JPA use field names as column names
+- **Database-driven validation:** Validation constraints handled by database tables, not source code annotations
 
 ### API Endpoint Rules
 - **GET endpoints:** Return only ACTIVE status entities
@@ -76,6 +78,7 @@ src/main/resources/
 - Use meaningful variable and method names
 - Keep methods small and focused
 - Prefer composition over inheritance
+- **Prioritize accessor chaining:** Use fluent method chaining with consistent indentation for all objects
 
 ## Layer Responsibilities
 
@@ -126,3 +129,9 @@ All entities use Status enum for lifecycle management:
 - Implement bidirectional relationships carefully
 - Consider fetch strategies (LAZY vs EAGER)
 - Use cascade operations appropriately
+
+### Validation Strategy
+- **Database-First Validation:** Rely on database constraints (NOT NULL, UNIQUE, CHECK, etc.)
+- **Minimal Bean Validation:** Only use `@Valid` for DTO validation at API boundaries
+- **No Entity Validation Annotations:** Avoid `@NotNull`, `@Size`, etc. on entity fields
+- **Database Schema Controls Data Integrity:** Let migration scripts define all constraints
