@@ -183,3 +183,47 @@ Only use these specific git commands during the workflow:
 - Basic validation or formatting requirements
 - Simple API endpoints matching existing conventions
 - Common patterns already implemented in the codebase
+
+
+TICKET-0010
+
+**Title:** Add Group CRUD - Group API
+
+**Goal:** Implement complete CRUD operations for Group entity to enable group management functionality in the system.
+
+**Acceptance Criteria:**
+- [ ] Create Group entity extending CommonEntity with specified schema fields
+- [ ] Implement GroupRepository with custom queries for active groups
+- [ ] Create GroupService with all CRUD operations following soft-delete pattern
+- [ ] Add GroupController with RESTful endpoints (GET, POST, PUT, DELETE)
+- [ ] Implement GroupDto and GroupAssembler for request/response mapping
+- [ ] Add input validation for group creation and updates
+- [ ] Return appropriate HTTP status codes (200, 201, 404, 400)
+- [ ] Add comprehensive test coverage (minimum 85% for service layer)
+- [ ] Create Flyway migration for groups table with specified schema
+- [ ] Update API documentation with new endpoints
+- [ ] Skip controller tests for now
+- [ ] Ensure to use workflow in TICKETS.md to create the branch and PR
+
+
+**Technical Notes:**
+- Create Group entity in model/entity package with schema:
+    - id: UUID (primary key)
+    - name: VARCHAR(240) NOT NULL
+    - description: VARCHAR(500) NOT NULL
+    - selfJoin: boolean DEFAULT false
+    - selfLeave: boolean DEFAULT false
+    - adminId: UUID (foreign key to User.id)
+    - status: Status ENUM (inherited from CommonEntity)
+    - createdDate: timestamp (inherited from CommonEntity)
+    - updatedDate: timestamp (inherited from CommonEntity)
+- Add GroupDto in model/dto package
+- Follow existing User entity patterns for consistency
+- Implement GroupRepository.findByStatusAndNameContaining() for search
+- Use GroupAssembler for entity-DTO conversion
+- Add GroupController with endpoints: GET /groups, POST /groups, PUT /groups/{id}, DELETE /groups/{id}
+- Follow pagination pattern for list endpoint
+- Use GroupTestUtils class for test data creation
+- Add @JoinColumn for adminId relationship to User entity
+
+**Context:** Groups will be used to organize users and manage permissions in future features. Each group should have a unique name within active groups and support soft-delete functionality like other entities in the system. The selfJoin and selfLeave flags control whether users can join/leave groups independently, while adminId tracks the group administrator.
